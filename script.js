@@ -101,25 +101,31 @@ if (contactForm) {
     const isEnglish = document.documentElement.lang === "en";
     const name = String(formData.get("name") || "").trim();
     const phone = String(formData.get("phone") || "").trim();
-    const request = String(formData.get("request") || "").trim();
-    const details = String(formData.get("details") || "").trim();
+    const governorate = String(formData.get("governorate") || formData.get("country") || "").trim();
+    const customerType = String(formData.get("customer_type") || "").trim();
+    const category = String(formData.get("category") || formData.get("request") || "").trim();
+    const details = String(formData.get("message") || formData.get("details") || "").trim();
     const messageLines = isEnglish
       ? [
           "Hello Oscar Poultry,",
           "I would like to request a quote.",
           `Name: ${name}`,
           `Phone: ${phone}`,
-          `Request Type: ${request}`,
-          `Details: ${details}`,
-        ]
+          governorate ? `Country / Governorate: ${governorate}` : "",
+          customerType ? `Customer Type: ${customerType}` : "",
+          category ? `Interested Category: ${category}` : "",
+          `Message: ${details}`,
+        ].filter(Boolean)
       : [
           "السلام عليكم شركة أوسكار،",
           "أرغب في طلب عرض سعر.",
           `الاسم: ${name}`,
           `رقم الهاتف: ${phone}`,
-          `نوع الطلب: ${request}`,
-          `التفاصيل: ${details}`,
-        ];
+          governorate ? `الدولة / المحافظة: ${governorate}` : "",
+          customerType ? `نوع العميل: ${customerType}` : "",
+          category ? `القسم المطلوب: ${category}` : "",
+          `الرسالة: ${details}`,
+        ].filter(Boolean);
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
       messageLines.join("\n")
     )}`;
