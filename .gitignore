@@ -1,0 +1,15 @@
+# Local Netlify folder
+.netlify
+
+# Local caches and temp browser profiles
+.npm-cache
+.chrome-headless
+.edge-headless
+
+# Local preview logs
+local-server.out.log
+local-server.err.log
+
+# Generated deployment folder
+cloudflare-pages-upload
+cloudflare-pages-upload.zip
