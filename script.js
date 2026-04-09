@@ -317,6 +317,558 @@ function createProductQuoteButtons() {
   });
 }
 
+const inventorySections = {
+  import: {
+    page: "import.html",
+    ar: "الاستيراد والبراندات العالمية",
+    en: "Import & Global Brands",
+  },
+  feeding: {
+    page: "feeding-systems.html",
+    ar: "أنظمة التغذية",
+    en: "Feeding Systems",
+  },
+  water: {
+    page: "water-systems.html",
+    ar: "أنظمة الشرب",
+    en: "Water Systems",
+  },
+  ventilation: {
+    page: "heating-ventilation.html",
+    ar: "التهوية والتبريد",
+    en: "Cooling & Ventilation",
+  },
+  heating: {
+    page: "heating.html",
+    ar: "التدفئة",
+    en: "Heating",
+  },
+  farm: {
+    page: "drinkers-feeders.html",
+    ar: "مستلزمات المزارع",
+    en: "Farm Supplies",
+  },
+  batteries: {
+    page: "poultry-batteries.html",
+    ar: "بطاريات تربية الدجاج",
+    en: "Poultry Batteries",
+  },
+  hatching: {
+    page: "hatching-machines.html",
+    ar: "ماكينات التفريخ",
+    en: "Hatching Machines",
+  },
+  generators: {
+    page: "generators.html",
+    ar: "مولدات الكهرباء",
+    en: "Power Generators",
+  },
+  pumps: {
+    page: "water-pumps.html",
+    ar: "مضخات ومواتير المياه",
+    en: "Water Pumps",
+  },
+  feather: {
+    page: "feather-cleaners.html",
+    ar: "رياشات تنظيف الدجاج",
+    en: "Feather Cleaners",
+  },
+  sprayers: {
+    page: "sanitizing-sprayers.html",
+    ar: "رشاشات التطهير",
+    en: "Sanitizing Sprayers",
+  },
+  scales: {
+    page: "scales.html",
+    ar: "الموازين",
+    en: "Scales",
+  },
+  main: {
+    page: null,
+    ar: "صور رئيسية",
+    en: "Main Photos",
+  },
+  review: {
+    page: null,
+    ar: "يحتاج مراجعة",
+    en: "Needs Review",
+  },
+  general: {
+    page: null,
+    ar: "غير محدد",
+    en: "Unassigned",
+  },
+};
+
+const inventoryFolderLabels = {
+  "photo about battary chicken": {
+    ar: "صور بطاريات الدواجن",
+    en: "Battery Photos",
+  },
+  "photo about cooling": {
+    ar: "صور التهوية والتبريد",
+    en: "Cooling Photos",
+  },
+  "photo about feeding": {
+    ar: "صور التغذية",
+    en: "Feeding Photos",
+  },
+  "photo about heating": {
+    ar: "صور التدفئة",
+    en: "Heating Photos",
+  },
+  "photo about needed": {
+    ar: "صور تحتاج مراجعة",
+    en: "Needs Review",
+  },
+  "photo about watering": {
+    ar: "صور أنظمة المياه",
+    en: "Watering Photos",
+  },
+  "photo about التفريخ": {
+    ar: "صور التفريخ",
+    en: "Hatching Photos",
+  },
+  "photo about رياشات تنظيف الدجاج": {
+    ar: "صور رياشات التنظيف",
+    en: "Feather Cleaner Photos",
+  },
+  "رشاشات تطهير": {
+    ar: "رشاشات تطهير",
+    en: "Sanitizing Sprayers",
+  },
+  "مواتير رفع وغواطس": {
+    ar: "مواتير رفع وغواطس",
+    en: "Water Pumps & Submersibles",
+  },
+  "موازين": {
+    ar: "موازين",
+    en: "Scales",
+  },
+  "مولدات": {
+    ar: "مولدات",
+    en: "Generators",
+  },
+  "main photos": {
+    ar: "الصور الرئيسية",
+    en: "Main Photos",
+  },
+  photos: {
+    ar: "مكتبة الصور",
+    en: "Photo Library",
+  },
+};
+
+function getInventoryCopy() {
+  if (document.documentElement.lang === "en") {
+    return {
+      productLabel: "Product",
+      currentNameLabel: "Current Name",
+      currentModelLabel: "Current Model",
+      sectionLabel: "Nearest Section",
+      folderLabel: "Folder",
+      fileLabel: "File Name",
+      pathLabel: "Path",
+      moreInfoButton: "More Info",
+      hideInfoButton: "Hide Info",
+      openSectionButton: "Open Section Page",
+      noSectionText: "No section page assigned yet",
+      requestEditButton: "Request Edit",
+      unavailable: "Not assigned yet",
+    };
+  }
+
+  return {
+    productLabel: "المنتج",
+    currentNameLabel: "الاسم الحالي",
+    currentModelLabel: "الموديل الحالي",
+    sectionLabel: "القسم الأقرب",
+    folderLabel: "المجلد",
+    fileLabel: "اسم الملف",
+    pathLabel: "المسار",
+    moreInfoButton: "معلومات أكثر",
+    hideInfoButton: "إخفاء المعلومات",
+    openSectionButton: "فتح صفحة القسم",
+    noSectionText: "لا توجد صفحة قسم محددة لهذا المنتج الآن",
+    requestEditButton: "اطلب تعديل",
+    unavailable: "غير محدد بعد",
+  };
+}
+
+function normalizeInventoryPath(path) {
+  return String(path || "")
+    .replace(/^[./\\]+/, "")
+    .replace(/\\/g, "/")
+    .trim();
+}
+
+function getInventorySectionLabel(section) {
+  return document.documentElement.lang === "en" ? section.en : section.ar;
+}
+
+function getInventoryAssetPath(path) {
+  const normalizedPath = normalizeInventoryPath(path);
+  return document.documentElement.lang === "en" ? `../${normalizedPath}` : normalizedPath;
+}
+
+function getInventoryFolderLabel(folderName) {
+  const normalizedFolder = String(folderName || "").trim();
+  const mapped = inventoryFolderLabels[normalizedFolder] || inventoryFolderLabels[normalizedFolder.toLowerCase()];
+
+  if (mapped) {
+    return document.documentElement.lang === "en" ? mapped.en : mapped.ar;
+  }
+
+  if (!normalizedFolder) {
+    return getInventoryCopy().unavailable;
+  }
+
+  const cleanFolder = normalizedFolder.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+
+  if (/[A-Za-z]/.test(cleanFolder) && !/[\u0600-\u06FF]/.test(cleanFolder)) {
+    return cleanFolder
+      .split(" ")
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
+  return cleanFolder;
+}
+
+function getInventorySectionMeta(path) {
+  const normalizedPath = normalizeInventoryPath(path).toLowerCase();
+
+  if (normalizedPath.includes("main photos/")) {
+    return inventorySections.main;
+  }
+
+  if (
+    normalizedPath.includes("photo about needed") ||
+    normalizedPath.includes("محتاجه تعديل") ||
+    normalizedPath.includes("chatgpt image") ||
+    normalizedPath.includes("gemini_generated_image")
+  ) {
+    return inventorySections.review;
+  }
+
+  if (normalizedPath.includes("water-pump") || normalizedPath.includes("مواتير رفع وغواطس")) {
+    return inventorySections.pumps;
+  }
+
+  if (normalizedPath.includes("photo about battary chicken") || normalizedPath.includes("battery-")) {
+    return inventorySections.batteries;
+  }
+
+  if (normalizedPath.includes("photo about cooling") || normalizedPath.includes("cooling-")) {
+    return inventorySections.ventilation;
+  }
+
+  if (normalizedPath.includes("photo about heating") || normalizedPath.includes("heating-")) {
+    return inventorySections.heating;
+  }
+
+  if (normalizedPath.includes("photo about feeding") || normalizedPath.includes("feeding-")) {
+    return inventorySections.feeding;
+  }
+
+  if (
+    normalizedPath.includes("farm-") ||
+    normalizedPath.includes("drinker") ||
+    normalizedPath.includes("crate") ||
+    normalizedPath.includes("tray")
+  ) {
+    return inventorySections.farm;
+  }
+
+  if (
+    normalizedPath.includes("photo about watering") ||
+    normalizedPath.includes("water-") ||
+    normalizedPath.includes("البل الصيني")
+  ) {
+    return inventorySections.water;
+  }
+
+  if (normalizedPath.includes("photo about التفريخ") || normalizedPath.includes("hatching-") || normalizedPath.includes("lshrd")) {
+    return inventorySections.hatching;
+  }
+
+  if (normalizedPath.includes("رياشات تنظيف الدجاج") || normalizedPath.includes("feather-cleaner")) {
+    return inventorySections.feather;
+  }
+
+  if (normalizedPath.includes("رشاشات تطهير") || normalizedPath.includes("sprayer-")) {
+    return inventorySections.sprayers;
+  }
+
+  if (normalizedPath.includes("/موازين/") || normalizedPath.includes("scale-")) {
+    return inventorySections.scales;
+  }
+
+  if (normalizedPath.includes("/مولدات/") || normalizedPath.includes("generator-")) {
+    return inventorySections.generators;
+  }
+
+  if (normalizedPath.includes("export-container") || normalizedPath.includes("export-shipment")) {
+    return inventorySections.import;
+  }
+
+  if (normalizedPath.includes("/photos/whatsapp image")) {
+    return inventorySections.review;
+  }
+
+  return inventorySections.general;
+}
+
+function isOpaqueInventoryName(baseName) {
+  const cleanBaseName = String(baseName || "").trim();
+  const lowerBaseName = cleanBaseName.toLowerCase();
+
+  return (
+    /^whatsapp image/.test(lowerBaseName) ||
+    /^chatgpt image/.test(lowerBaseName) ||
+    /^gemini_generated_image/.test(lowerBaseName) ||
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cleanBaseName) ||
+    /^[0-9a-f-]{24,}$/i.test(cleanBaseName) ||
+    /^[A-Z0-9]{5,}$/.test(cleanBaseName)
+  );
+}
+
+function cleanInventoryDisplayText(value) {
+  return String(value || "")
+    .replace(/\.[^.]+$/, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function titleCaseInventoryText(value) {
+  return String(value || "")
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => {
+      if (!/^[a-z0-9]+$/i.test(word)) {
+        return word;
+      }
+
+      if (/^\d+[a-z]+$/i.test(word) || /^[a-z]+\d+$/i.test(word) || word.length <= 3) {
+        return word.toUpperCase();
+      }
+
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(" ");
+}
+
+function buildInventoryName(path, index, section, folderLabel) {
+  const fileName = normalizeInventoryPath(path).split("/").pop() || "";
+  const baseName = fileName.replace(/\.[^.]+$/, "");
+  const referenceNumber = String(index + 1).padStart(3, "0");
+
+  if (!isOpaqueInventoryName(baseName)) {
+    const cleanName = cleanInventoryDisplayText(baseName);
+
+    if (/[A-Za-z]/.test(cleanName) && !/[\u0600-\u06FF]/.test(cleanName)) {
+      return titleCaseInventoryText(cleanName);
+    }
+
+    return cleanName || `${getInventorySectionLabel(section)} ${referenceNumber}`;
+  }
+
+  const referenceLabel = getInventorySectionLabel(section) || folderLabel;
+
+  if (document.documentElement.lang === "en") {
+    return `${referenceLabel} Item ${referenceNumber}`;
+  }
+
+  return `${referenceLabel} منتج ${referenceNumber}`;
+}
+
+function buildInventoryModel(fileName, index) {
+  const baseName = String(fileName || "").replace(/\.[^.]+$/, "");
+  const referenceNumber = String(index + 1).padStart(3, "0");
+  const lowerBaseName = baseName.toLowerCase();
+
+  if (/^whatsapp image/.test(lowerBaseName)) {
+    return `WA-${referenceNumber}`;
+  }
+
+  if (/^chatgpt image/.test(lowerBaseName) || /^gemini_generated_image/.test(lowerBaseName)) {
+    return `AI-${referenceNumber}`;
+  }
+
+  if (isOpaqueInventoryName(baseName)) {
+    return `SKU-${referenceNumber}`;
+  }
+
+  const model = cleanInventoryDisplayText(baseName)
+    .replace(/[^0-9A-Za-z\u0600-\u06FF ]+/g, " ")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 48);
+
+  return model ? model.toUpperCase() : `SKU-${referenceNumber}`;
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function renderProductInventory() {
+  const inventoryRoot = document.querySelector("[data-product-inventory]");
+
+  if (!inventoryRoot || inventoryRoot.dataset.rendered === "true") {
+    return;
+  }
+
+  const sources = Array.isArray(window.productInventorySources) ? window.productInventorySources : [];
+  const copy = getInventoryCopy();
+
+  document.querySelectorAll("[data-inventory-total]").forEach((node) => {
+    node.textContent = String(sources.length);
+  });
+
+  if (!sources.length) {
+    inventoryRoot.innerHTML = `<div class="inventory-empty">${escapeHtml(copy.unavailable)}</div>`;
+    inventoryRoot.dataset.rendered = "true";
+    return;
+  }
+
+  inventoryRoot.innerHTML = sources
+    .map((source, index) => {
+      const normalizedPath = normalizeInventoryPath(source);
+      const parts = normalizedPath.split("/");
+      const fileName = parts[parts.length - 1] || "";
+      const folderName = parts[parts.length - 2] || "";
+      const section = getInventorySectionMeta(normalizedPath);
+      const folderLabel = getInventoryFolderLabel(folderName);
+      const sectionLabel = getInventorySectionLabel(section);
+      const referenceNumber = String(index + 1).padStart(3, "0");
+      const displayName = buildInventoryName(normalizedPath, index, section, folderLabel);
+      const displayModel = buildInventoryModel(fileName, index);
+      const sectionAction = section.page
+        ? `<a class="button button-primary inventory-link" href="${escapeHtml(section.page)}">${escapeHtml(copy.openSectionButton)}</a>`
+        : `<span class="inventory-missing-link">${escapeHtml(copy.noSectionText)}</span>`;
+
+      return `
+        <article class="inventory-item" id="product-${referenceNumber}" data-product-number="${referenceNumber}">
+          <div class="inventory-item-main">
+            <div class="inventory-media">
+              <img loading="lazy" decoding="async" src="${escapeHtml(getInventoryAssetPath(normalizedPath))}" alt="${escapeHtml(displayName)}">
+            </div>
+            <div class="inventory-copy">
+              <div class="inventory-topline">
+                <span class="inventory-number">${escapeHtml(copy.productLabel)} #${escapeHtml(referenceNumber)}</span>
+                <span class="inventory-section-tag">${escapeHtml(sectionLabel)}</span>
+              </div>
+              <h3>${escapeHtml(displayName)}</h3>
+              <p class="inventory-model">${escapeHtml(copy.currentModelLabel)}: <strong>${escapeHtml(displayModel)}</strong></p>
+              <p class="inventory-file-brief">${escapeHtml(copy.fileLabel)}: ${escapeHtml(fileName)}</p>
+            </div>
+            <div class="inventory-actions">
+              <button
+                class="button button-secondary inventory-toggle"
+                type="button"
+                aria-expanded="false"
+                data-open-label="${escapeHtml(copy.moreInfoButton)}"
+                data-close-label="${escapeHtml(copy.hideInfoButton)}"
+              >
+                ${escapeHtml(copy.moreInfoButton)}
+              </button>
+            </div>
+          </div>
+          <div class="inventory-panel" hidden>
+            <div class="inventory-detail-grid">
+              <div class="inventory-detail-card">
+                <span>${escapeHtml(copy.currentNameLabel)}</span>
+                <strong>${escapeHtml(displayName)}</strong>
+              </div>
+              <div class="inventory-detail-card">
+                <span>${escapeHtml(copy.currentModelLabel)}</span>
+                <strong>${escapeHtml(displayModel)}</strong>
+              </div>
+              <div class="inventory-detail-card">
+                <span>${escapeHtml(copy.sectionLabel)}</span>
+                <strong>${escapeHtml(sectionLabel)}</strong>
+              </div>
+              <div class="inventory-detail-card">
+                <span>${escapeHtml(copy.folderLabel)}</span>
+                <strong>${escapeHtml(folderLabel)}</strong>
+              </div>
+              <div class="inventory-detail-card">
+                <span>${escapeHtml(copy.fileLabel)}</span>
+                <strong>${escapeHtml(fileName)}</strong>
+              </div>
+              <div class="inventory-detail-card">
+                <span>${escapeHtml(copy.pathLabel)}</span>
+                <strong>${escapeHtml(normalizedPath)}</strong>
+              </div>
+            </div>
+            <div class="inventory-panel-actions">
+              ${sectionAction}
+              <a class="button button-secondary inventory-link" href="contact.html">${escapeHtml(copy.requestEditButton)}</a>
+            </div>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  inventoryRoot.addEventListener("click", (event) => {
+    const toggleButton = event.target.closest(".inventory-toggle");
+
+    if (!toggleButton) {
+      return;
+    }
+
+    const currentItem = toggleButton.closest(".inventory-item");
+    const currentPanel = currentItem?.querySelector(".inventory-panel");
+
+    if (!currentItem || !currentPanel) {
+      return;
+    }
+
+    const shouldOpen = currentPanel.hidden;
+
+    inventoryRoot.querySelectorAll(".inventory-item.is-open").forEach((item) => {
+      if (item === currentItem) {
+        return;
+      }
+
+      item.classList.remove("is-open");
+      item.querySelector(".inventory-panel")?.setAttribute("hidden", "");
+
+      const itemToggle = item.querySelector(".inventory-toggle");
+
+      if (itemToggle) {
+        itemToggle.textContent = itemToggle.dataset.openLabel || copy.moreInfoButton;
+        itemToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    currentItem.classList.toggle("is-open", shouldOpen);
+
+    if (shouldOpen) {
+      currentPanel.removeAttribute("hidden");
+      toggleButton.textContent = toggleButton.dataset.closeLabel || copy.hideInfoButton;
+      toggleButton.setAttribute("aria-expanded", "true");
+      return;
+    }
+
+    currentPanel.setAttribute("hidden", "");
+    toggleButton.textContent = toggleButton.dataset.openLabel || copy.moreInfoButton;
+    toggleButton.setAttribute("aria-expanded", "false");
+  });
+
+  inventoryRoot.dataset.rendered = "true";
+}
+
 function getContactWidgetCopy() {
   if (document.documentElement.lang === "en") {
     return {
@@ -710,6 +1262,7 @@ if (document.readyState === "loading") {
   document.addEventListener(
     "DOMContentLoaded",
     () => {
+      renderProductInventory();
       createFloatingContactWidget();
       initCatalogMediaSliders();
       createProductSpecsPanels();
@@ -722,6 +1275,7 @@ if (document.readyState === "loading") {
     }
   );
 } else {
+  renderProductInventory();
   createFloatingContactWidget();
   initCatalogMediaSliders();
   createProductSpecsPanels();
