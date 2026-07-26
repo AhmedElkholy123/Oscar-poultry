@@ -1,0 +1,12 @@
+{
+  "name": "oscar-poultry-site",
+  "private": true,
+  "devDependencies": {
+    "wrangler": "^3"
+  },
+  "scripts": {
+    "dev": "wrangler pages dev . --d1=DB=oscar-poultry-db",
+    "d1:migrate:local": "wrangler d1 execute oscar-poultry-db --local --file=migrations/0001_init.sql",
+    "d1:migrate:remote": "wrangler d1 execute oscar-poultry-db --remote --file=migrations/0001_init.sql"
+  }
+}

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://oscar-poultry.netlify.app/sitemap.xml
+Sitemap: https://oscar-poultry.pages.dev/sitemap.xml

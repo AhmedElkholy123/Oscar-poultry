@@ -3677,7 +3677,6 @@ select {
 .inventory-page-stats span,
 .inventory-toolbar p,
 .inventory-model,
-.inventory-file-brief,
 .inventory-detail-card span,
 .inventory-missing-link,
 .inventory-empty {
@@ -3781,12 +3780,8 @@ select {
 }
 
 .inventory-model,
-.inventory-file-brief {
+.inventory-copy h3 + .inventory-model {
   margin: 0;
-}
-
-.inventory-file-brief {
-  word-break: break-word;
 }
 
 .inventory-actions {
@@ -3804,6 +3799,10 @@ select {
   gap: 14px;
   padding-top: 14px;
   border-top: 1px solid rgba(24, 34, 28, 0.08);
+}
+
+.inventory-panel[hidden] {
+  display: none !important;
 }
 
 .inventory-detail-grid {
@@ -3907,4 +3906,72 @@ select {
   .inventory-actions .button {
     width: 100%;
   }
+}
+
+/* Admin dashboard */
+.admin-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.admin-filter-bar label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.admin-filter-bar input,
+.admin-filter-bar select {
+  padding: 10px 14px;
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.admin-leads-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow);
+}
+
+.admin-leads-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.admin-leads-table th,
+.admin-leads-table td {
+  padding: 12px 16px;
+  text-align: start;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 0.9rem;
+  vertical-align: top;
+}
+
+.admin-leads-table th {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.admin-leads-empty {
+  text-align: center;
+  padding: 24px;
+  color: var(--muted);
+}
+
+.lead-status-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  cursor: pointer;
 }
