@@ -1,15 +1,6 @@
-function isAuthorized(request) {
-  // Cloudflare Access already blocks unauthenticated requests to /admin* and
-  // /api/admin/* at the edge. This header check is defense-in-depth in case
-  // the Access policy path is ever misconfigured to miss this route.
-  return Boolean(request.headers.get("Cf-Access-Authenticated-User-Email"));
-}
-
 export async function onRequestGet({ request, env }) {
-  if (!isAuthorized(request)) {
-    return Response.json({ ok: false, error: "unauthorized" }, { status: 403 });
-  }
-
+  // Auth is enforced by functions/api/admin/_middleware.js for every route
+  // under /api/admin/*, so this handler can assume the session is valid.
   const url = new URL(request.url);
   const since = url.searchParams.get("since");
   const contactedParam = url.searchParams.get("contacted");

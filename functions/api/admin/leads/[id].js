@@ -1,12 +1,6 @@
-function isAuthorized(request) {
-  return Boolean(request.headers.get("Cf-Access-Authenticated-User-Email"));
-}
-
 export async function onRequestPatch({ request, env, params }) {
-  if (!isAuthorized(request)) {
-    return Response.json({ ok: false, error: "unauthorized" }, { status: 403 });
-  }
-
+  // Auth is enforced by functions/api/admin/_middleware.js for every route
+  // under /api/admin/*, so this handler can assume the session is valid.
   const id = Number(params.id);
 
   if (!Number.isInteger(id) || id <= 0) {

@@ -87,6 +87,12 @@ async function loadLeads() {
 
   try {
     const response = await fetch(`/api/admin/leads?${params.toString()}`);
+
+    if (response.status === 401) {
+      window.location.href = "/admin/login.html";
+      return;
+    }
+
     const data = await response.json();
 
     if (!response.ok || !data.ok) {
@@ -115,6 +121,18 @@ async function toggleContacted(id, contacted) {
 refreshButton.addEventListener("click", loadLeads);
 sinceFilter.addEventListener("change", loadLeads);
 contactedFilter.addEventListener("change", loadLeads);
+
+const logoutButton = document.getElementById("admin-logout");
+
+logoutButton?.addEventListener("click", async () => {
+  try {
+    await fetch("/api/admin/logout", { method: "POST" });
+  } catch {
+    // ignore; redirecting to the login page either way
+  }
+
+  window.location.href = "/admin/login.html";
+});
 
 leadsBody.addEventListener("change", (event) => {
   const checkbox = event.target.closest(".admin-contacted-checkbox");
